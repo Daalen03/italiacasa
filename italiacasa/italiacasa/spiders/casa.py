@@ -1,6 +1,7 @@
 import scrapy
 from ..items import ItaliacasaItem
 from scrapy.loader import ItemLoader
+# from scrapy.crawler import CrawlerProcess
 
 class CasaSpider(scrapy.Spider):
     name = 'casa'
@@ -10,7 +11,7 @@ class CasaSpider(scrapy.Spider):
     def __init__(self):
         url = 'https://italiacasa.nl/aanbod/?start='
 
-        for page in range(0, 20, 10): # 940
+        for page in range(0, 100, 10): # 940
             self.start_urls.append(url + str(page))
 
     def parse(self, response):
@@ -25,12 +26,13 @@ class CasaSpider(scrapy.Spider):
             longitude_raw = casas.css('body > script::text').re(r'\d{1,2}\.\d{1,2}')[1]
             soort_raw = casas.css('body > div > div > section > div > div > div.panel.list > ul > li ::text').get()
             status_raw = casas.css('body > div > div > section > div > div > div.panel.list > ul > li ::text').getall()[-1]
+            perceel_raw = casas.css('body > div > div > section > div > div > span.icon.icon-boom ::text').get()
 
             l.add_css('content_id', 'body > div > div > section > div > div > span.ref > span')
             l.add_css('plaats', 'body > div > div > section.house.video-visual > div > div > h1')
             l.add_css('provincie', 'body > div > div > section.house.video-visual > div > div > h2')
             l.add_css('woonoppervlak', 'body > div > div > section > div > div > span.icon.icon-huis')
-            l.add_css('perceel', 'body > div > div > section > div > div > span.icon.icon-boom')
+            l.add_value('perceel', perceel_raw)
             l.add_css('prijs', 'body > div > div > section > div > div.medium-4.medium-push-8.columns > div.panel.info > span')
             l.add_value('latitude', latitude_raw)
             l.add_value('longitude', longitude_raw)
@@ -41,4 +43,6 @@ class CasaSpider(scrapy.Spider):
 
             yield l.load_item()
 
-
+# process = CrawlerProcess()
+# process.crawl(CasaSpider)
+# process.start()

@@ -21,7 +21,7 @@ class ItaliacasaPipeline:
         plaats TEXT,
         provincie TEXT,
         woonoppervlak TEXT,
-        perceel REAL,
+        perceel TEXT,
         prijs TEXT,
         latitude TEXT,
         longitude TEXT,
@@ -34,8 +34,8 @@ class ItaliacasaPipeline:
 
     def process_item(self, item, spider):
         self.cur.execute("""INSERT OR IGNORE INTO casas VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",
-                             (item['content_id'], item['plaats'], item['provincie'], item['woonoppervlak'],
-                              item['perceel'], item['prijs'], item['latitude'], item['longitude'], item['soort'],
-                              item['status'], item['huis_url'], item['timestamp'],))
+                         (item['content_id'], item['plaats'], item['provincie'], item.get('woonoppervlak', None),
+                          item.get('perceel', None), item['prijs'], item['latitude'], item['longitude'], item['soort'],
+                          item['status'], item['huis_url'], item['timestamp'],))
         self.con.commit()
         return item
