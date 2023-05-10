@@ -11,7 +11,7 @@ class CasaSpider(scrapy.Spider):
     def __init__(self, *args, **kwargs):
         url = 'https://italiacasa.nl/aanbod/?start='
 
-        for page in range(100, 890, 10): # 940
+        for page in range(0, 2000, 10): # 940
             self.start_urls.append(url + str(page))
 
     def parse(self, response):
